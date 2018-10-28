@@ -24,6 +24,14 @@ yarn graphql
   }
 }
 ```
-#DB MLAB
+#DB Setup MLAB
+https://mlab.com/
+```
+#db
+mongoose.connect('mongodb://miukki:test123@ds219641.mlab.com:19641/trips')
 
-
+```
+#client Used script
+```
+yarn create react-app client
+```
