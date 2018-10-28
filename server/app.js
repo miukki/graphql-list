@@ -6,7 +6,7 @@ import cors from 'cors'
 
 mongoose.connect('mongodb://miukki:test123@ds219641.mlab.com:19641/trips')
 mongoose.connection.once('open', () => {
-  console.log('connect db')
+  console.log('connect Mongo db')
 })
 const app = express()
 app.use(cors())

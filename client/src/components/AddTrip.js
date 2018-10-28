@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {graphql} from 'react-apollo'
-import {getOwnersQuery} from '../queries/queries'
+import {graphql, compose} from 'react-apollo'
+import {getOwnersQuery, addTripMutation, getTripsQuery} from '../queries/queries'
 
 class AddTrip extends Component {
   constructor(props) {
@@ -14,11 +14,15 @@ class AddTrip extends Component {
   onSubmit(e) {
     e.preventDefault();
     e.stopPropagation();
-    console.log(this.state)
+    const {addTripMutation} = this.props;    
+    addTripMutation({
+      variables: Object.assign({},this.state),
+      refetchQueries: [{query: getTripsQuery}]
+    })
   }
   render() {
-    const {data} = this.props;
-    const {owners} = data;
+    const {getOwnersQuery} = this.props;
+    const {owners, loading} = getOwnersQuery;
     return (
       <div id="AddTrip">
 
@@ -33,8 +37,9 @@ class AddTrip extends Component {
           </div>
           <div>
               <label>Owner</label>
-              {data.loading ? (<div>Loading..</div>) : (
-                <select onChange={e=>this.setState({ownerId: e.target.value})}>
+              {loading ? (<div>Loading..</div>) : (
+                <select value={this.state.ownerId} onChange={e=>this.setState({ownerId: e.target.value})}>
+                {!this.state.ownerId && <option>...</option> }
                 {owners.map((owner) => <option key={owner.id} value={owner.id}>{owner.name}</option>)}
                 </select>
                 )}
@@ -48,5 +53,9 @@ class AddTrip extends Component {
   }
   }
   
-  export default graphql(getOwnersQuery)(AddTrip);
+  export default compose(
+    graphql(getOwnersQuery, {name: 'getOwnersQuery'}),
+    graphql(addTripMutation, {name: 'addTripMutation'}),
+
+  )(AddTrip);
   
